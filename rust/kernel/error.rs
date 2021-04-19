@@ -6,7 +6,7 @@
 
 use crate::{bindings, c_types};
 use alloc::{alloc::AllocError, collections::TryReserveError};
-use core::{num::TryFromIntError, str::Utf8Error};
+use core::{convert::TryFrom, num::TryFromIntError, str::Utf8Error};
 
 /// Generic integer kernel error.
 ///
@@ -47,6 +47,9 @@ impl Error {
 
     /// Interrupted system call.
     pub const EINTR: Self = Error(-(bindings::EINTR as i32));
+
+    /// Cannot assign requested address
+    pub const EADDRNOTAVAIL: Self = Error(-(bindings::EADDRNOTAVAIL as i32));
 
     /// Creates an [`Error`] from a kernel error code.
     pub fn from_kernel_errno(errno: c_types::c_int) -> Error {
@@ -103,4 +106,25 @@ impl From<AllocError> for Error {
     fn from(_: AllocError) -> Error {
         Error::ENOMEM
     }
+}
+
+/// Used by the rtnl_link_ops macro to interface with C
+pub fn c_from_kernel_result<T>(r: KernelResult<T>) -> T
+where
+    T: TryFrom<c_types::c_int>,
+    T::Error: core::fmt::Debug,
+{
+    match r {
+        Ok(v) => v,
+        Err(e) => T::try_from(e.to_kernel_errno()).unwrap(),
+    }
+}
+
+#[macro_export]
+macro_rules! c_from_kernel_result {
+    ($($tt:tt)*) => {{
+        $crate::c_from_kernel_result((|| {
+            $($tt)*
+        })())
+    }};
 }

@@ -42,6 +42,7 @@ pub mod chrdev;
 mod error;
 pub mod file_operations;
 pub mod miscdev;
+pub mod net;
 pub mod pages;
 
 pub mod linked_list;
@@ -64,7 +65,7 @@ pub mod iov_iter;
 mod types;
 pub mod user_ptr;
 
-pub use crate::error::{Error, KernelResult};
+pub use crate::error::{c_from_kernel_result, Error, KernelResult};
 pub use crate::types::{CStr, Mode};
 
 /// Page size defined in terms of the `PAGE_SHIFT` macro from C.

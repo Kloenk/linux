@@ -7,6 +7,9 @@
 #include <linux/gfp.h>
 #include <linux/highmem.h>
 #include <linux/uio.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/rtnetlink.h>
 
 void rust_helper_BUG(void)
 {
@@ -105,8 +108,36 @@ size_t rust_helper_copy_to_iter(const void *addr, size_t bytes, struct iov_iter 
 }
 EXPORT_SYMBOL_GPL(rust_helper_copy_to_iter);
 
-#if !defined(CONFIG_ARM)
+void *rust_helper_netdev_priv(struct net_device *dev)
+{
+	return netdev_priv(dev);
+}
+EXPORT_SYMBOL_GPL(rust_helper_netdev_priv);
+
+void rust_helper_eth_hw_addr_random(struct net_device *dev)
+{
+	eth_hw_addr_random(dev);
+}
+EXPORT_SYMBOL_GPL(rust_helper_eth_hw_addr_random);
+
+int rust_helper_net_device_set_new_lstats(struct net_device *dev)
+{
+	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+	if (!dev->lstats)
+		return -ENOMEM;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(rust_helper_net_device_set_new_lstats);
+
+void rust_helper_dev_lstats_add(struct net_device *dev, unsigned int len)
+{
+	dev_lstats_add(dev, len);
+}
+EXPORT_SYMBOL_GPL(rust_helper_dev_lstats_add);
+
 // See https://github.com/rust-lang/rust-bindgen/issues/1671
+#if !defined(CONFIG_ARM)
 static_assert(__builtin_types_compatible_p(size_t, uintptr_t),
 	"size_t must match uintptr_t, what architecture is this??");
 #endif
