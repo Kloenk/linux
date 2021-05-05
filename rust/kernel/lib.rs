@@ -42,7 +42,13 @@ pub mod chrdev;
 mod error;
 pub mod file_operations;
 pub mod miscdev;
+
+#[cfg(any(CONFIG_NET, doc))]
 pub mod net;
+
+#[cfg(any(CONFIG_CRYPTO, doc))]
+pub mod crypto;
+
 pub mod pages;
 
 pub mod linked_list;

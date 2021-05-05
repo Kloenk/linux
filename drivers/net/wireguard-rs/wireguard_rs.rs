@@ -17,7 +17,7 @@ module! {
     author: b"Rust for Linux Contributors",
     description: b"Rust Wireguard network driver",
     license: b"GPL v2",
-    alias_rtnl_lock: b"wireguard_rs",
+    alias_rtnl_link: b"wireguard_rs",
 }
 
 struct WireguardRs;
@@ -26,5 +26,11 @@ impl KernelModule for WireguardRs {
     fn init() -> KernelResult<Self> {
 
         Ok(WireguardRs)
+    }
+}
+
+impl Drop for WireguardRs {
+    fn drop(&mut self) {
+
     }
 }
