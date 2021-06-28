@@ -50,6 +50,7 @@ pub mod net;
 pub mod pages;
 pub mod str;
 pub mod traits;
+pub mod pci;
 
 pub mod linked_list;
 mod raw_list;

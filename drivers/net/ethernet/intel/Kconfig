@@ -55,6 +55,22 @@ config E1000
 	  To compile this driver as a module, choose M here. The module
 	  will be called e1000.
 
+config E1000RS
+	tristate "Intel(R) PRO/1000 Gigabit Ethernet support written in rust"
+	depends on PCI && RUST
+	help
+	  This driver supports Intel(R) PRO/1000 gigabit ethernet family of
+	  adapters.  For more information on how to identify your adapter, go
+	  to the Adapter & Driver ID Guide that can be located at:
+
+	  <http://support.intel.com>
+
+	  More specific information on configuring the driver is in
+	  <file:Documentation/networking/device_drivers/ethernet/intel/e1000.rst>.
+
+	  To compile this driver as a module, choose M here. The module
+	  will be called e1000rs.
+
 config E1000E
 	tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
 	depends on PCI && (!SPARC32 || BROKEN)
