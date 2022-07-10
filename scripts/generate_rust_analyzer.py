@@ -9,6 +9,7 @@ import logging
 import os
 import pathlib
 import sys
+import subprocess
 
 def args_crates_cfgs(cfgs):
     crates_cfgs = {}
@@ -77,7 +78,14 @@ def generate_crates(srctree, objtree, sysroot_src, external_src, cfgs):
         [],
         is_proc_macro=True,
     )
-    crates[-1]["proc_macro_dylib_path"] = f"{objtree}/rust/libmacros.so"
+
+    libmacros_path = subprocess.run(
+        [os.environ["RUSTC"], "--print", "file-names", "--crate-name", "macros", "--crate-type", "proc-macro", "-"],
+        stdin=subprocess.DEVNULL,
+        capture_output=True
+    ).stdout.decode().strip()
+    libmacros_path = f"rust/{libmacros_path}"
+    crates[-1]["proc_macro_dylib_path"] = libmacros_path
 
     append_crate(
         "build_error",
