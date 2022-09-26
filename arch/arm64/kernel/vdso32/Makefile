@@ -106,6 +106,7 @@ VDSO_LDFLAGS += --orphan-handling=$(CONFIG_LD_ORPHAN_WARN_LEVEL)
 # We have to use a relative path because scripts/Makefile.host prefixes
 # $(hostprogs) with $(obj)
 munge := ../../../arm/vdso/vdsomunge
+HOST_EXTRACFLAGS	+= $(shell $(HOSTPKG_CONFIG) --cflags libelf) -include $(obj)/elf_helper.h
 hostprogs := $(munge)
 
 c-obj-vdso := note.o

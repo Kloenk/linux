@@ -16,6 +16,8 @@ ccflags-y += -fno-stack-protector	\
 
 hostprogs := gen-hyprel
 HOST_EXTRACFLAGS += -I$(objtree)/include
+HOST_EXTRACFLAGS += $(shell $(HOSTPKG_CONFIG) --cflags libelf)
+HOST_EXTRACFLAGS += -include $(obj)/endian_helper.h
 
 lib-objs := clear_page.o copy_page.o memcpy.o memset.o
 lib-objs := $(addprefix ../../../lib/, $(lib-objs))
